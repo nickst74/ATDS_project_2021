@@ -1,0 +1,20 @@
+Part A.1
+//Download dataset
+wget http://83.212.74.119/movie_data.tar.gz
+
+//extract files
+tar -xvf movie_data.tar.gz
+
+//make a folder to put the dataset
+hadoop fs -mkdir hdfs://master:9000/data
+
+//put data in hdfs
+hadoop fs -put movies.csv hdfs://master:9000/data/.
+hadoop fs -put movie_genres.csv hdfs://master:9000/data/.
+hadoop fs -put ratings.csv hdfs://master:9000/data/.
+
+//check if data is now there
+hadoop fs -ls hdfs://master:9000/data/
+
+Part A.2
+
