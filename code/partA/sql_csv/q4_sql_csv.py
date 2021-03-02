@@ -25,7 +25,7 @@ movies = df2.select(df2._c0.alias("Movie"), df2._c2.alias("Summary"), df2._c3.al
 result = spark.sql("""SELECT 5_Year_Interval, SUM(SummaryLength)/COUNT(*) as Mean_Summary_Length
                         FROM movie_genres g
                         INNER JOIN (    Select Movie,
-                                                LENGTH(Summary) as SummaryLength,
+                                                LENGTH(Summary)-LENGTH(REPLACE(Summary, ' ', ''))+1 as SummaryLength,
                                                 CASE
                                                         WHEN YEAR(Released) BETWEEN 2000 AND 2004 THEN 1
                                                         WHEN YEAR(Released) BETWEEN 2005 AND 2009 THEN 2

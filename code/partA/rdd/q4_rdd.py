@@ -13,7 +13,7 @@ def split_complex(x):
 def custom_split(x):
         tokens = split_complex(x)
         movieID = int(tokens[0])
-        summary = len(tokens[2])
+        summary = len(tokens[2].split(' '))
         year = tokens[3][0:4]
         return (movieID, (year, summary))
 
