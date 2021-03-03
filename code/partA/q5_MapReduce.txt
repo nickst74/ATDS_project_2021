@@ -1,0 +1,50 @@
+// join all records on movieID from all 3 files
+MAP1(key, line):
+	tokens = line.split(",")
+	if line from movies.csv:
+		emit(tokens.movieId, (tokens.title, tokens.popularity, "M"))
+	elif line from ratings.csv:
+		emit(tokens.movieId, (tokens.user, tokens.rating, "R"))
+	else:
+		emit(tokens.movieId, (tokens.genre, "G"))
+
+REDUCE1(key, values): // key is the movieID
+	for i in values:
+		if i.tag == "G":
+			for j in values:
+				if j.tag == "R":
+					for k in values:
+						if k.tag == "M":
+							emit(key, (j, k, i)) // emit everything after join
+
+// emit with (Genre, User) as key
+MAP2(key, value):
+	emit((value.genre, value.user), (value.rating, popularity, value.title))
+
+// for every (Genre, User) combination find count of ratings
+// along with best and worst movie for the user on that specific genre only
+REDUCE2(key, values):
+	count = 0
+	best = values[0]
+	worst = values[0]
+	for v in values:
+		count++
+		if v > best: //mind the way the values/tuples are constructed
+			best = v
+		if v[0] < worst[0] || (v[0] == worst[0] && v[1] > worst[1]):
+			worst = v
+	emit(Genre, (user, count, best, worst))
+
+// now found most ratings user for every genre
+MAP3(key, value)
+	emit(key, value)
+
+REDUCE3(key, values):
+	genre = key
+	max = values[0].count
+	result = values[0]
+	for v in values:
+		if v.count > max:
+			max = v.count
+			result = v
+	output(genre, result.user, max, result.best.title, result.best.rating, result.worst.title, result.worst.rating)

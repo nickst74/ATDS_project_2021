@@ -1,0 +1,27 @@
+// (mean rating for every user)
+MAP1(key, line (from ratings.csv)):
+	tokens = line.split(",")
+	emit(tokens.user, tokens.rating)
+
+REDUCE1(key, values): // (user, list(ratings))
+	sum = 0
+	count = 0
+	for r in values:
+		count++
+		sum += r
+	meanRating = sum / count
+	emit(1, meanRating) // all emited with same key
+
+// (find how many mean ratings are above 3)
+MAP2(key, value):
+	emit(key, value)
+
+REDUCE2(key, values):
+	sum = 0
+	count = 0
+	for r in values:
+		count++
+		if r > 3:
+			sum++
+	result = 100 * sum / count
+	output(result)

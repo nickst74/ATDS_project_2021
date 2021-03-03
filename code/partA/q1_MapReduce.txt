@@ -1,0 +1,15 @@
+MAP(key, line (from movies.csv)):
+	tokens = line.split(",")
+	if tokens.income != 0 && tokens.cost != 0 && tokens.timestamp != "" && tokens.timestamp.year >= 2000:
+		profit = (tokens.income - tokens.cost) * 100 / tokens.cost
+		emit(tokens.timestamp.year, (tokens.title, profit))
+
+REDUCE(key, values):
+	year = key
+	best = values[0].title
+	maxProfit = values[0].profit
+	for v in values:
+		if v.profit > maxProfit:
+			best = v.title
+			maxProfit = v.profit
+	output(year, best, maxProfit)

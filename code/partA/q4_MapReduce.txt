@@ -1,0 +1,41 @@
+// (join movies.csv and movie_genres.csv)
+MAP1(key, line (from movies.csv or movie_genres.csv)):
+	tokens = line.split(",")
+	if line from movies.csv:
+		id = tokens.movieId
+		plot = tokens.plot
+		length = length(plot.split(" ")) // count words in plot
+		if tokens.timestamp.year.isBetween(2000, 2004):
+			emit(id, (1, lenght, "M")) // (movieID, (5_year_interval, tag))
+		elif tokens.timestamp.year.isBetween(2005, 2009):
+			emit(id, (2, lenght, "M"))
+		elif tokens.timestamp.year.isBetween(2010, 2014):
+			emit(id, (3, lenght, "M"))
+		elif tokens.timestamp.year.isBetween(2015, 2019):
+			emit(id, (4, lenght, "M"))
+	else:
+		id = tokens.movieId
+		genre = tokens.genre
+		if genre = "Drama":
+			emit(id, (genre, "G")) // (movieID, ("Drama", tag))
+
+REDUCE1(key, values):
+	for i in values:
+		if i.tag == "G": // only emit if it is a drama
+			for j in values:
+				if j.tag == "M":
+					// emit plot length (with key the 5_year_interval)
+					emit(j.5_year_interval, j.length)
+
+// (find mean plot_length for every 5_year_interval)
+MAP2(key, value):
+	emit(key, value)
+
+REDUCE2(key, values):
+	sum = 0
+	count = 0
+	for v in values:
+		sum += v
+		count++
+	result = sum / count
+	output(key, result)

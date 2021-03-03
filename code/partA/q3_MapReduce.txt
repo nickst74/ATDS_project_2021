@@ -1,0 +1,42 @@
+// (find mean rating for every movie)
+MAP1(key, line (ratings.csv)):
+	tokens = line.split(",")
+	emit(tokens.movie, tokens.rating)
+
+REDUCE1(key, values):
+	sum = 0
+	count = 0
+	for r in values:
+		count++
+		sum += r
+	emit(key, sum/count) // emits (movieId, meanRating)
+
+// (joining new emitted pairs with records from movie_genres.csv file)
+// (joining from the start would be unnecessary and inefficient)
+MAP2(key, value (emitted pair or line from movie_genres.csv)):
+	if value is line from movie_genres.csv:
+		tokens = value.split(",")
+		emit(tokens.movieId, (genre, "G"))
+	else:
+		emit(key, (value, "R")) // (movieId, (value, tag))
+
+REDUCE2(key, values):
+	for i in values: // find the meanRating in the list (only only exists of course)
+		if i.tag = "R":
+			for j in values:
+				if j.tag = "G":
+					// emit genre/meanRating for every genre that the movie belongs to
+					emit(j.genre, i.meanRatings)
+
+// find mean rating and count of movies for every genre
+MAP3(key , value):
+	emit(key, value)
+
+REDUCE3(key, values):
+	sum = 0
+	count = 0
+	for r in values:
+		count++
+		sum += r
+	result = sum / count
+	output(key, result, count) // output pairs of (Genre, MeanRating, MovieCount) for every genre
