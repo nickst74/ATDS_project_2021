@@ -1,13 +1,17 @@
 from pyspark.sql import SparkSession
 from sys import argv
+from io import StringIO
 import csv
 
 spark = SparkSession.builder.appName("rdd_broadcast_join").getOrCreate()
 sc = spark.sparkContext
 
+def split_complex(x):
+	return list(csv.reader(StringIO(x), delimiter=','))[0]
+
 # a string with fields separated by ',' and the position of the key
 def custom_split_emit(x, pos, inList=False):
-        tokens = x.split(',')
+        tokens = split_complex(x)
         key = tokens[pos-1]
         if inList:
                 val = [tuple(tokens)]

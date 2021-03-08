@@ -17,7 +17,7 @@ hadoop fs -put ratings.csv hdfs://master:9000/data/.
 hadoop fs -ls hdfs://master:9000/data/
 
 Part B.3
-// Isolate 100 lines from movie_ratings.csv
-head -100 movie_ratings.csv > movie_ratings_sample.csv
+// Isolate 100 lines from movie_genres.csv
+head -100 movie_genres.csv > movie_genres_sample.csv
 // Upload sample to hdfs
 hadoop fs -put movie_genres_sample.csv hdfs://master:9000/data/.

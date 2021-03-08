@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from sys import argv
+from io import StringIO
 import csv
 
 spark = SparkSession.builder.appName("rdd_partition_join").getOrCreate()
@@ -8,10 +9,13 @@ spark.conf.set("spark.executor.memory", "2G")
 spark.conf.set("spark.driver.memory", "6G")
 sc = spark.sparkContext
 
+def split_complex(x):
+	return list(csv.reader(StringIO(x), delimiter=','))[0]
+
 # a string with fields separated by ',' and the position of the key
 # emit -> (key, [(value,tag)])
 def custom_split_emit(x, pos, tag):
-        tokens = x.split(',')
+        tokens = split_complex(x)
         key = tokens[pos-1]
         val = tuple(tokens)
         return (key, [(val, tag)])

@@ -9,11 +9,11 @@ spark = SparkSession \
 df = spark.read.parquet("hdfs://master:9000/data/ratings.parquet")
 
 ratings = df.select(df._c0.alias("User"), df._c2.alias("Rating")).\
-        createOrReplaceTempView("ratings")
+	createOrReplaceTempView("ratings")
 
 result = spark.sql("""SELECT COUNT(CASE WHEN MeanRating > 3 THEN 1 END)/COUNT(User)*100 AS Percentage
-                        FROM (  Select User, AVG(Rating) as MeanRating
-                                FROM ratings
-                                GROUP BY User)""")
+			FROM (	Select User, AVG(Rating) as MeanRating
+				FROM ratings
+				GROUP BY User)""")
 
 result.show()
